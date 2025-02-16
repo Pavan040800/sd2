@@ -3,170 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>savebytes</title>
+    <title>SaveByte - Your Financial Companion</title>
     <style>
-        /* Global Styling */
-        body {
-            font-family: 'Arial', sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f0f8ff;
-            color: #333;
-        }
-
-        /* Container Styling */
-        .container {
-            max-width: 800px;
-            margin: 40px auto;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-            background: linear-gradient(135deg, #f0f8ff, #e6f7ff);
-        }
-
-        /* Header Styling */
-        h2 {
-            text-align: center;
-            color: #004b6d;
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-
-        h3 {
-            color: #2c3e50;
-            font-size: 24px;
-            margin-bottom: 15px;
-        }
-
-        /* Input and Button Styling */
-        input, button {
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            border: 2px solid #3498db;
-            border-radius: 8px;
             box-sizing: border-box;
-            font-size: 16px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            width: 100%;
+            padding: 1rem;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        /* Scrolling Quote Styles */
+        .quote-container {
+            width: 100%;
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .scrolling-text {
+            display: inline-block;
+            animation: scroll-left 45s linear infinite;
+            padding-left: 100%;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: bold;
         }
 
         input {
-            font-size: 18px;
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
         }
 
-        button {
-            background-color: #3498db;
-            color: white;
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        button:hover {
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
             background-color: #2980b9;
         }
 
-        /* Food Item List Styling */
-        .food-list {
-            margin-top: 20px;
+        .toggle-form {
+            text-align: center;
+            margin-top: 1rem;
         }
 
-        .food-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            border-bottom: 2px solid #ecf0f1;
-            background-color: #fafafa;
-            border-radius: 8px;
-            transition: all 0.3s ease;
+        .toggle-form a {
+            color: #3498db;
+            text-decoration: none;
         }
 
-        .food-item:hover {
-            background-color: #dff9fb;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        .toggle-form a:hover {
+            text-decoration: underline;
         }
 
-        .food-item img {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            object-fit: cover;
+        .form-container {
+            display: none;
         }
 
-        .food-item span {
-            flex: 1;
-            font-size: 18px;
-            color: #34495e;
-            margin-left: 20px;
-        }
-
-        .food-item button {
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .food-item button:hover {
-            background-color: #2ecc71;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-            h2 {
-                font-size: 28px;
-            }
-            h3 {
-                font-size: 20px;
-            }
-            .food-item {
-                font-size: 16px;
-                padding: 10px;
-            }
+        .active {
+            display: block;
         }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h2>SaveBytes</h2>
-    
-    <input type="text" placeholder="Enter Restaurant Name" id="restaurant-name">
-    <button>Register Restaurant</button>
-
-    <h3>Discounted Food Available:</h3>
-    <div class="food-list">
-        <div class="food-item">
-            <img src="https://via.placeholder.com/100" alt="Pizza">
-            <span>Pizza - $5</span>
-            <button>Buy</button>
-        </div>
-        <div class="food-item">
-            <img src="https://via.placeholder.com/100" alt="Burger">
-            <span>Burger - $3</span>
-            <button>Buy</button>
+    <div class="header">
+        <div class="logo">SaveByte</div>
+        <div class="quote-container">
+            <div class="scrolling-text">
+                "Save food, save money, save lives - one byte at a time"
+            </div>
         </div>
     </div>
 
-    <h3>Food Donations:</h3>
-    <div class="food-list">
-        <div class="food-item">
-            <img src="https://via.placeholder.com/100" alt="Bread Loaf">
-            <span>Bread Loaf - 10 packs</span>
-            <button>Donate</button>
+    <div class="container">
+        <!-- Login Form -->
+        <div id="loginForm" class="form-container active">
+            <h2 style="text-align: center; margin-bottom: 1.5rem; color: #2c3e50;">Login</h2>
+            <form onsubmit="return false;">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button class="btn btn-primary">Login</button>
+            </form>
+            <div class="toggle-form">
+                <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
+            </div>
         </div>
-        <div class="food-item">
-            <img src="https://via.placeholder.com/100" alt="Rice Packets">
-            <span>Rice Packets - 5 packs</span>
-            <button>Donate</button>
+
+        <!-- Sign Up Form -->
+        <div id="signupForm" class="form-container">
+            <h2 style="text-align: center; margin-bottom: 1.5rem; color: #2c3e50;">Create Account</h2>
+            <form onsubmit="return false;">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" required>
+                </div>
+                <button class="btn btn-primary">Create Account</button>
+            </form>
+            <div class="toggle-form">
+                <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
+            </div>
         </div>
     </div>
-</div>
 
+    <script>
+        function toggleForms() {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            loginForm.classList.toggle('active');
+            signupForm.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
+
