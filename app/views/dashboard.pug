@@ -1,0 +1,33 @@
+
+doctype html
+html
+  head
+    title Dashboard - Food Items
+    link(rel="stylesheet" href="dashboard.css")
+  body
+    include index
+    h1 Food Items Dashboard
+    table
+      thead
+        tr
+          th Item ID
+          th Restaurant ID
+          th Name
+          th Description
+          th Quantity
+          th Expiry Date
+          th Status
+          th Donation Status
+          th Donation Date
+      tbody
+        each foodItem in foodItems
+          tr
+            td= foodItem.item_id
+            td= foodItem.restaurant_id
+            td= foodItem.name
+            td= foodItem.description
+            td= foodItem.quantity
+            td= foodItem.expiry_date
+            td= foodItem.status
+            td= foodItem.donation_status
+            td= foodItem.donation_date

@@ -13,9 +13,14 @@ app.set('views', './app/views');
 // Get the functions in the db.js file to use
 const db = require('./services/db');
 
+// // Create a route for root - /
+// app.get("/", function(req, res) {
+//     res.send("Hello world!");
+// });
+
 // Create a route for root - /
 app.get("/", function(req, res) {
-    res.send("Hello world!");
+    res.render("index");
 });
 
 // Create a route for testing the db
@@ -25,6 +30,17 @@ app.get("/db_test", function(req, res) {
     db.query(sql).then(results => {
         console.log(results);
         res.send(results)
+    });
+});
+
+// Route to render dashboard with food items
+app.get("/dashboard", function(req, res) {
+    const sql = 'SELECT * FROM FoodItems';  
+    db.query(sql).then(results => {
+        res.render('dashboard', { foodItems: results });
+    }).catch(error => {
+        console.error('Error fetching food items:', error);
+        res.status(500).send('Error fetching food items.');
     });
 });
 
