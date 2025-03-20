@@ -13,25 +13,12 @@ app.set('views', './app/views');
 // Get the functions in the db.js file to use
 const db = require('./services/db');
 
+
 // // Create a route for root - /
-// app.get("/", function(req, res) {
-//     res.send("Hello world!");
-// });
-
-// Create a route for root - /
 app.get("/", function(req, res) {
-    res.render("index");
+    res.render("home");
 });
 
-// Create a route for testing the db
-app.get("/db_test", function(req, res) {
-    // Assumes a table called test_table exists in your database
-    sql = 'select * from test_table';
-    db.query(sql).then(results => {
-        console.log(results);
-        res.send(results)
-    });
-});
 
 // Route to render dashboard with food items
 app.get("/dashboard", function(req, res) {
