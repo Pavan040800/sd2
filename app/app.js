@@ -22,14 +22,33 @@ app.get("/", function(req, res) {
 
 // Route to render dashboard with food items
 app.get("/dashboard", function(req, res) {
-    const sql = 'SELECT * FROM FoodItems';  
-    db.query(sql).then(results => {
-        res.render('dashboard', { foodItems: results });
-    }).catch(error => {
-        console.error('Error fetching food items:', error);
-        res.status(500).send('Error fetching food items.');
-    });
+    const { search, status } = req.query;
+    let sql = 'SELECT * FROM FoodItems WHERE 1';  // 1 is always true, helps append conditions
+    let params = [];
+
+    // Apply search filter if 'search' is provided
+    if (search) {
+        sql += " AND (name LIKE ? OR restaurant_id IN (SELECT restaurant_id FROM Restaurants WHERE name LIKE ?))";
+        params.push(`%${search}%`, `%${search}%`);
+    }
+
+    // Apply status filter if 'status' is provided
+    if (status) {
+        sql += " AND status = ?";
+        params.push(status);
+    }
+
+    // Fetch the data from the database
+    db.query(sql, params)
+        .then(results => {
+            res.render('dashboard', { foodItems: results });
+        })
+        .catch(error => {
+            console.error('Error fetching food items:', error);
+            res.status(500).send('Error fetching food items.');
+        });
 });
+
 
 // Create a route for /goodbye
 // Responds to a 'GET' request

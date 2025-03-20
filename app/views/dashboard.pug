@@ -1,12 +1,24 @@
-
 doctype html
 html
   head
     title Dashboard - Food Items
-    link(rel="stylesheet" href="dashboard.css")
+    link(rel="stylesheet", href="dashboard.css")
+    script(src="https://kit.fontawesome.com/YOUR_FONT_AWESOME_KIT.js" crossorigin="anonymous")  
   body
     include index
+
     h1 Food Items Dashboard
+    
+    // 🔹 Search Form
+    form(action="/dashboard" method="GET" class="search-form")
+      input(type="text" name="search" placeholder="Search by name or restaurant...")
+      select(name="status")
+        option(value="") -- Select Status --
+        option(value="Available") Available
+        option(value="Donated") Donated
+        option(value="Expired") Expired
+      button(type="submit") Search
+
     table
       thead
         tr
@@ -20,14 +32,18 @@ html
           th Donation Status
           th Donation Date
       tbody
-        each foodItem in foodItems
+        if foodItems.length
+          each foodItem in foodItems
+            tr
+              td= foodItem.item_id
+              td= foodItem.restaurant_id
+              td= foodItem.name
+              td= foodItem.description
+              td= foodItem.quantity
+              td= foodItem.expiry_date
+              td= foodItem.status
+              td= foodItem.donation_status
+              td= foodItem.donation_date
+        else
           tr
-            td= foodItem.item_id
-            td= foodItem.restaurant_id
-            td= foodItem.name
-            td= foodItem.description
-            td= foodItem.quantity
-            td= foodItem.expiry_date
-            td= foodItem.status
-            td= foodItem.donation_status
-            td= foodItem.donation_date
+            td(colspan="9") No matching food items found.
