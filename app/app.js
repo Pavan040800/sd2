@@ -50,6 +50,23 @@ app.get("/dashboard", function(req, res) {
 });
 
 
+// Route to render details of a specific food item
+app.get("/food/:id", function(req, res) {
+    const foodItemId = req.params.id;
+    const sql = 'SELECT * FROM FoodItems WHERE item_id = ?';  
+
+    db.query(sql, [foodItemId]).then(results => {
+        if (results.length > 0) {
+            res.render('details', { foodItem: results[0] });
+        } else {
+            res.status(404).send('Food item not found.');
+        }
+    }).catch(error => {
+        console.error('Error fetching food item:', error);
+        res.status(500).send('Error fetching food item.');
+    });
+});
+
 // Create a route for /goodbye
 // Responds to a 'GET' request
 app.get("/goodbye", function(req, res) {

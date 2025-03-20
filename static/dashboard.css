@@ -120,3 +120,41 @@ tr:hover {
       margin-bottom: 10px;
   }
 }
+
+a {
+  text-decoration: none;
+  color: inherit; /* Prevent the link color from changing */
+}
+
+table tbody tr {
+  cursor: pointer;
+}
+
+table tbody tr:hover {
+  background-color: #f1f1f1; /* Light gray color when hovered */
+}
+
+/* Styling the action buttons */
+.btn {
+  padding: 8px 16px;
+  margin-right: 10px;
+  text-decoration: none;
+  color: white;
+  border-radius: 5px;
+}
+
+.view-btn {
+  background-color: #3498db;
+}
+
+.edit-btn {
+  background-color: #f39c12;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}

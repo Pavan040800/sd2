@@ -1,0 +1,37 @@
+doctype html
+html
+  head
+    title Food Item Details
+    link(rel="stylesheet", href="../detail.css")
+  body
+    .container
+      h1 Food Item Details
+
+      .details-box
+        h2 Food Item Information
+        p
+          span Name: 
+          | #{foodItem.name}
+        p
+          span Description: 
+          | #{foodItem.description}
+        p
+          span Quantity: 
+          | #{foodItem.quantity}
+        p
+          span Expiry Date: 
+          | #{foodItem.expiry_date}
+        p
+          span Status: 
+          | #{foodItem.status}
+        p
+          span Donation Status: 
+          | #{foodItem.donation_status}
+        p
+          span Donation Date: 
+          | #{foodItem.donation_date}
+
+      .action-buttons
+        //- a(href=`/food/edit/#{foodItem.item_id}`, class="btn edit-btn") Edit
+        //- a(href=`/food/delete/#{foodItem.item_id}`, class="btn delete-btn", onclick="return confirm('Are you sure you want to delete this item?');") Delete
+        a(href="/dashboard", class="btn back-btn") Back to Dashboard
