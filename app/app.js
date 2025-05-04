@@ -1,90 +1,162 @@
-// Import express.js
 const express = require("express");
+const session = require("express-session");
+const { User } = require("./models/user");
+const db = require('./services/db'); // ✅ Only once
+const bcrypt = require("bcryptjs");
 
 // Create express app
-var app = express();
+const app = express();
 
-// Add static files location
+// Static files
 app.use(express.static("static"));
-// Use the Pug templating engine
-app.set('view engine', 'pug');
-app.set('views', './app/views');
 
-// Get the functions in the db.js file to use
-const db = require('./services/db');
+// Templating
+app.set("view engine", "pug");
+app.set("views", "./app/views");
 
+// Body parser
+app.use(express.urlencoded({ extended: true }));
 
-// // Create a route for root - /
-app.get("/", function(req, res) {
-    res.render("home");
+// Session config
+const oneHour = 60 * 60 * 1000;
+app.use(session({
+  secret: "secretkeysdfjsflyoifasd",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false,
+    maxAge: oneHour
+  }
+}));
+
+// Routes
+app.get("/", (req, res) => {
+  if (req.session.uid) {
+    res.send("Welcome back, " + req.session.uid + "!");
+  } else {
+    res.render("login", { loggedIn: req.session.loggedIn });
+  }
 });
 
+app.get("/home", (req, res) => {
+  res.render("home");
+});
 
-// Route to render dashboard with food items
-app.get("/dashboard", function(req, res) {
-    const { search, status } = req.query;
-    let sql = 'SELECT * FROM FoodItems WHERE 1';  // 1 is always true, helps append conditions
-    let params = [];
+app.get("/register", (req, res) => {
+  res.render("register");
+});
 
-    // Apply search filter if 'search' is provided
-    if (search) {
-        sql += " AND (name LIKE ? OR restaurant_id IN (SELECT restaurant_id FROM Restaurants WHERE name LIKE ?))";
-        params.push(`%${search}%`, `%${search}%`);
+app.get("/login", (req, res) => {
+  res.render("login", { loggedIn: req.session.loggedIn, currentPage: "login" });
+});
+
+// Register or Set Password
+app.post("/set-password", async (req, res) => {
+  const { email, password, businessName, forename, surname, contactNumber } = req.body;
+  const user = new User(email);
+  user.businessName = businessName;
+  user.forename = forename;
+  user.surname = surname;
+  user.contactNumber = contactNumber;
+
+  try {
+    const uId = await user.getIdFromEmail();
+    if (uId) {
+      await user.setUserPassword(password);
+      res.render("register", { successMessage: "Password updated", loggedIn: req.session.loggedIn });
+    } else {
+      const newId = await user.addUser(password);
+      res.render("register", { successMessage: "Account created", loggedIn: req.session.loggedIn });
     }
+  } catch (err) {
+    console.error("Error in set-password:", err.message);
+    res.render("register", { errorMessage: "An error occurred", loggedIn: req.session.loggedIn });
+  }
+});
 
-    // Apply status filter if 'status' is provided
-    if (status) {
-        sql += " AND status = ?";
-        params.push(status);
+// Login authentication
+app.post("/authenticate", async (req, res) => {
+  const { email, password } = req.body;
+  const user = new User(email);
+
+  try {
+    const uId = await user.getIdFromEmail();
+    if (uId) {
+      const match = await user.authenticate(password);
+      if (match) {
+        req.session.uid = uId;
+        req.session.loggedIn = true;
+        res.redirect("/home");
+      } else {
+        res.render("login", { errorMessage: "Invalid password" });
+      }
+    } else {
+      res.render("login", { errorMessage: "Email not found" });
     }
-
-    // Fetch the data from the database
-    db.query(sql, params)
-        .then(results => {
-            res.render('dashboard', { foodItems: results });
-        })
-        .catch(error => {
-            console.error('Error fetching food items:', error);
-            res.status(500).send('Error fetching food items.');
-        });
+  } catch (err) {
+    console.error("Authentication error:", err.message);
+    res.render("login", { errorMessage: "Login failed" });
+  }
 });
 
-
-// Route to render details of a specific food item
-app.get("/food/:id", function(req, res) {
-    const foodItemId = req.params.id;
-    const sql = 'SELECT * FROM FoodItems WHERE item_id = ?';  
-
-    db.query(sql, [foodItemId]).then(results => {
-        if (results.length > 0) {
-            res.render('details', { foodItem: results[0] });
-        } else {
-            res.status(404).send('Food item not found.');
-        }
-    }).catch(error => {
-        console.error('Error fetching food item:', error);
-        res.status(500).send('Error fetching food item.');
-    });
+// Logout
+app.get("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/login");
+  });
 });
 
-// Create a route for /goodbye
-// Responds to a 'GET' request
-app.get("/goodbye", function(req, res) {
-    res.send("Goodbye world!");
+// Dashboard with optional search and status filters
+app.get("/dashboard", async (req, res) => {
+  const { search, status } = req.query;
+  let sql = "SELECT * FROM FoodItems WHERE 1";
+  const params = [];
+
+  if (search) {
+    sql += " AND (name LIKE ? OR restaurant_id IN (SELECT restaurant_id FROM Restaurants WHERE name LIKE ?))";
+    params.push(`%${search}%`, `%${search}%`);
+  }
+
+  if (status) {
+    sql += " AND status = ?";
+    params.push(status);
+  }
+
+  try {
+    const results = await db.query(sql, params);
+    res.render("dashboard", { foodItems: results });
+  } catch (err) {
+    console.error("Error fetching dashboard data:", err.message);
+    res.status(500).send("Error loading dashboard.");
+  }
 });
 
-// Create a dynamic route for /hello/<name>, where name is any value provided by user
-// At the end of the URL
-// Responds to a 'GET' request
-app.get("/hello/:name", function(req, res) {
-    // req.params contains any parameters in the request
-    // We can examine it in the console for debugging purposes
-    console.log(req.params);
-    //  Retrieve the 'name' parameter and use it in a dynamically generated page
-    res.send("Hello " + req.params.name);
+// Food Item Details Page
+app.get("/food/:id", async (req, res) => {
+  const foodItemId = req.params.id;
+  try {
+    const results = await db.query("SELECT * FROM FoodItems WHERE item_id = ?", [foodItemId]);
+    if (results.length) {
+      res.render("details", { foodItem: results[0] });
+    } else {
+      res.status(404).send("Food item not found.");
+    }
+  } catch (err) {
+    console.error("Error fetching food item:", err.message);
+    res.status(500).send("Error loading item details.");
+  }
 });
 
-// Start server on port 3000
-app.listen(3000,function(){
-    console.log(`Server running at http://127.0.0.1:3000/`);
+// Misc Routes
+app.get("/hello/:name", (req, res) => {
+  res.send("Hello " + req.params.name);
+});
+
+app.get("/goodbye", (req, res) => {
+  res.send("Goodbye world!");
+});
+
+// Start server
+app.listen(3000, () => {
+  console.log("Server running at http://127.0.0.1:3000/");
 });
