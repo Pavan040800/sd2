@@ -1,0 +1,43 @@
+doctype html
+html
+  head
+    title Register - Save Bytes
+    link(rel="stylesheet", href="/auth.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css")
+  body
+    .container
+      h1 
+        i.fas.fa-user-plus
+        | Register on Save Bytes
+
+      if errorMessage
+        .alert.error= errorMessage
+      if successMessage
+        .alert.success= successMessage
+
+      form(action="/set-password" method="POST")
+        label(for="email") Email
+        input(type="email", name="email", required)
+
+        label(for="password") Password
+        input(type="password", name="password", required)
+
+        label(for="businessName") Business/Restaurant Name
+        input(type="text", name="businessName")
+
+        label(for="forename") First Name
+        input(type="text", name="forename")
+
+        label(for="surname") Last Name
+        input(type="text", name="surname")
+
+        label(for="contactNumber") Contact Number
+        input(type="text", name="contactNumber")
+
+        button(type="submit").btn 
+          i.fas.fa-user-check
+          |  Register
+
+      p
+        | Already have an account? 
+        a(href="/login") Login here

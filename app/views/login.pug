@@ -1,0 +1,29 @@
+doctype html
+html
+  head
+    title Login - Save Bytes
+    link(rel="stylesheet", href="/auth.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css")
+  body
+    .container
+      h1 
+        i.fas.fa-sign-in-alt
+        | Login to Save Bytes
+      
+      if errorMessage
+        .alert.error= errorMessage
+
+      form(action="/authenticate" method="POST")
+        label(for="email") Email
+        input(type="email", name="email", required)
+
+        label(for="password") Password
+        input(type="password", name="password", required)
+
+        button(type="submit").btn 
+          i.fas.fa-arrow-right
+          |  Login
+
+      p
+        | Don't have an account? 
+        a(href="/register") Register here
