@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    title Donations History
+    link(rel="stylesheet", href="/dashboard.css")
+  body
+    include index
+
+    h1 Donations History
+
+    table
+      thead
+        tr
+          th Donation ID
+          th Restaurant
+          th Description
+          th Quantity
+          th Charity
+          th Donated At
+      tbody
+        if donations.length
+          each d in donations
+            tr
+              td= d.donation_id
+              td
+                a(href=`/food/${d.donation_id}`) #{d.restaurant_name} (ID:#{d.restaurant_id})
+              td= d.food_description
+              td= d.quantity
+              td= d.charity_name
+              td= d.donation_time
+        else
+          tr
+            td(colspan="6") No donations recorded.

@@ -307,6 +307,28 @@ app.get("/food/:id", async (req, res) => {
     res.status(500).send("Error loading item details.");
   }
 });
+
+// List all donations
+app.get('/donations', async (req, res) => {
+  try {
+    const results = await db.query(
+      `SELECT D.donation_id,
+              D.restaurant_id,
+              R.name    AS restaurant_name,
+              D.food_description,
+              D.quantity,
+              D.charity_name,
+              D.donation_time
+       FROM Donations D
+       JOIN Restaurants R ON D.restaurant_id = R.restaurant_id
+       ORDER BY D.donation_time DESC`
+    );
+    res.render('donations', { donations: results });
+  } catch (err) {
+    console.error('Error fetching donations:', err.message);
+    res.status(500).send('Error loading donations.');
+  }
+});
 // Start server
 app.listen(3000, () => {
   console.log("Server running at http://127.0.0.1:3000/");
