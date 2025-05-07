@@ -1,0 +1,25 @@
+doctype html
+html
+  head
+    title Donate "#{foodItem.name}"
+    link(rel="stylesheet", href="/food-form.css")
+  body
+    include index
+
+    .form-container
+      h1 Donate "#{foodItem.name}"
+
+      form(action=`/food/donate/${foodItem.item_id}` method="POST")
+        p
+          strong Quantity: 
+          |  #{foodItem.quantity}
+        p
+          strong Expiry Date: 
+          |  #{foodItem.expiry_date}
+
+        label(for="charity_name") Charity Name
+        input#charity_name(type="text" name="charity_name" required)
+
+        button.btn.submit-btn(type="submit") Confirm Donation
+
+      a.btn.back-btn(href="/dashboard") Cancel

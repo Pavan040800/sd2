@@ -174,3 +174,19 @@ a.btn.add-btn {
 a.btn.add-btn:hover {
   background-color: #219150;
 }
+
+/* Donate button */
+.btn.donate-btn {
+  background-color: #e67e22;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  margin-left: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+.btn.donate-btn:hover {
+  background-color: #d35400;
+}

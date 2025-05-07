@@ -1,7 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const { User } = require("./models/user");
-const db = require('./services/db'); // ✅ Only once
+const db = require('./services/db');
 const bcrypt = require("bcryptjs");
 
 // Create express app
@@ -240,6 +240,73 @@ app.get("/food/delete/:id", async (req, res) => {
   }
 });
 
+// Render donation form
+app.get("/food/donate/:id", async (req, res) => {
+  try {
+    console.log("[Donate GET] fetching item id=", req.params.id);
+    const results = await db.query(
+      "SELECT * FROM FoodItems WHERE item_id = ?",
+      [req.params.id]
+    );
+    if (!results.length) {
+      console.log("[Donate GET] not found:", req.params.id);
+      return res.status(404).send("Item not found.");
+    }
+    console.log("[Donate GET] rendering form for:", results[0]);
+    res.render("food-donate", { foodItem: results[0] });
+  } catch (err) {
+    console.error("[Donate GET] ERROR:", err);
+    res.status(500).send("Server error.");
+  }
+});
+
+// Handle donation submission
+app.post("/food/donate/:id", async (req, res) => {
+  const { charity_name } = req.body;
+  const itemId = req.params.id;
+
+  try {
+    // 1) mark the item donated
+    await db.query(
+      `UPDATE FoodItems
+         SET status = 'donated',
+             donation_status = 'donated',
+             donation_date = NOW()
+       WHERE item_id = ?`,
+      [itemId]
+    );
+
+    // 2) insert into Donations
+    await db.query(
+      `INSERT INTO Donations
+         (restaurant_id, food_description, quantity, charity_name)
+       SELECT restaurant_id, name, quantity, ?
+         FROM FoodItems
+        WHERE item_id = ?`,
+      [charity_name, itemId]
+    );
+
+    res.redirect("/dashboard");
+  } catch (err) {
+    console.error("[Donate POST] ERROR:", err);
+    res.status(500).send("Failed to process donation.");
+  }
+});
+
+// ——— Finally, your generic “view single item” route ———
+app.get("/food/:id", async (req, res) => {
+  try {
+    const results = await db.query(
+      "SELECT * FROM FoodItems WHERE item_id = ?",
+      [req.params.id]
+    );
+    if (!results.length) return res.status(404).send("Food item not found.");
+    res.render("details", { foodItem: results[0] });
+  } catch (err) {
+    console.error("Error fetching food item:", err);
+    res.status(500).send("Error loading item details.");
+  }
+});
 // Start server
 app.listen(3000, () => {
   console.log("Server running at http://127.0.0.1:3000/");

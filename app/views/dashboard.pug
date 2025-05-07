@@ -2,22 +2,23 @@ doctype html
 html
   head
     title Dashboard - Food Items
-    link(rel="stylesheet", href="dashboard.css")
+    link(rel="stylesheet", href="/dashboard.css")
   body
     include index
 
     h1 Food Items Dashboard
-    //-- create button
+
+    //– “Add New” button
     a.btn.add-btn(href="/food_create") + Add New Food Item
 
-    // Search Form
-    form(action="/dashboard" method="GET" class="search-form")
-      input(type="text" name="search" placeholder="Search by name or restaurant...")
+    //– Search / Filter
+    form.search-form(action="/dashboard" method="GET")
+      input(type="text" name="search" placeholder="Search by name or description...")
       select(name="status")
         option(value="") -- Select Status --
-        option(value="Available") Available
-        option(value="Donated") Donated
-        option(value="Expired") Expired
+        option(value="available") Available
+        option(value="donated") Donated
+        option(value="expired") Expired
       button(type="submit") Search
 
     table
@@ -35,21 +36,28 @@ html
           th Actions
       tbody
         if foodItems.length
-          each foodItem in foodItems
+          each f in foodItems
             tr
-              td= foodItem.item_id
-              td= foodItem.restaurant_id
-              td= foodItem.name
-              td= foodItem.description
-              td= foodItem.quantity
-              td= foodItem.expiry_date
-              td= foodItem.status
-              td= foodItem.donation_status
-              td= foodItem.donation_date
+              td= f.item_id
+              td= f.restaurant_id
+              td= f.name
+              td= f.description
+              td= f.quantity
+              td= f.expiry_date
+              td= f.status
+              td= f.donation_status
+              td= f.donation_date
               td
-                a(href=`/food/${foodItem.item_id}`, class="btn view-btn") View
-                a(href=`/food/edit/${foodItem.item_id}`, class="btn edit-btn") Edit
-                a(href=`/food/delete/${foodItem.item_id}`, class="btn delete-btn", onclick="return confirm('Are you sure you want to delete this item?');") Delete
+                a.btn.view-btn(href=`/food/${f.item_id}`) View
+                a.btn.edit-btn(href=`/food/edit/${f.item_id}`) Edit
+                a.btn.delete-btn(
+                  href=`/food/delete/${f.item_id}`
+                  onclick="return confirm('Are you sure you want to delete this item?');"
+                ) Delete
+                // only show Donate on available items
+                if f.status === 'available'
+                  form(action=`/food/donate/${f.item_id}` method="GET" style="display:inline")
+                    button.btn.donate-btn(type="submit") Donate
         else
           tr
             td(colspan="10") No matching food items found.
