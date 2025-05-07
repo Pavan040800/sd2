@@ -158,3 +158,19 @@ table tbody tr:hover {
 .btn:hover {
   opacity: 0.8;
 }
+/* “Add New Food Item” button */
+a.btn.add-btn {
+  display: inline-block;
+  margin: 20px 0;
+  padding: 10px 18px;
+  background-color: #27ae60;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+a.btn.add-btn:hover {
+  background-color: #219150;
+}

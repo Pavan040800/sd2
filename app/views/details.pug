@@ -32,6 +32,6 @@ html
           | #{foodItem.donation_date}
 
       .action-buttons
-        //- a(href=`/food/edit/#{foodItem.item_id}`, class="btn edit-btn") Edit
-        //- a(href=`/food/delete/#{foodItem.item_id}`, class="btn delete-btn", onclick="return confirm('Are you sure you want to delete this item?');") Delete
+        a(href=`/food/edit/#{foodItem.item_id}`, class="btn edit-btn") Edit
+        a(href=`/food/delete/#{foodItem.item_id}`, class="btn delete-btn", onclick="return confirm('Are you sure you want to delete this item?');") Delete
         a(href="/dashboard", class="btn back-btn") Back to Dashboard

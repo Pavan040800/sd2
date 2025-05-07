@@ -157,7 +157,7 @@ app.get("/goodbye", (req, res) => {
 });
 
 // Render “New Food Item” form
-app.get("/food/new", (req, res) => {
+app.get("/food_create", (req, res) => {
   res.render("food-form", { foodItem: {} });
 });
 
