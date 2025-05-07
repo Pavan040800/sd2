@@ -1,0 +1,47 @@
+doctype html
+html
+  head
+    title= foodItem.item_id ? 'Edit Food Item' : 'Add Food Item'
+    link(rel="stylesheet", href="../../food-form.css")
+  body
+    include index1
+
+    h1= foodItem.item_id ? 'Edit Food Item' : 'Add Food Item'
+
+    form(
+      action= foodItem.item_id
+        ? `/food/edit/${foodItem.item_id}`
+        : '/food/new'
+      method="POST"
+      class="form-container"
+    )
+      label(for="restaurant_id") Restaurant ID
+      input(
+        type="number" name="restaurant_id" required
+        value=foodItem.restaurant_id || ''
+      )
+
+      label(for="name") Name
+      input(
+        type="text" name="name" required
+        value=foodItem.name || ''
+      )
+
+      label(for="description") Description
+      textarea(name="description" required)= foodItem.description || ''
+
+      label(for="quantity") Quantity
+      input(
+        type="number" name="quantity" min="1" required
+        value=foodItem.quantity || ''
+      )
+
+      label(for="expiry_date") Expiry Date
+      input(
+        type="date" name="expiry_date" required
+        value=foodItem.expiry_date || ''
+      )
+
+      button(type="submit" class="btn submit-btn")= foodItem.item_id ? 'Update' : 'Create'
+
+    a(href="/dashboard" class="btn back-btn") Back to Dashboard

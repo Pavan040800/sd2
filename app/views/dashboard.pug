@@ -30,7 +30,7 @@ html
           th Status
           th Donation Status
           th Donation Date
-          th Actions  // Added an Actions column
+          th Actions
       tbody
         if foodItems.length
           each foodItem in foodItems
@@ -46,8 +46,8 @@ html
               td= foodItem.donation_date
               td
                 a(href=`/food/${foodItem.item_id}`, class="btn view-btn") View
-                //- a(href=`/food/edit/${foodItem.item_id}`, class="btn edit-btn") Edit
-                //- a(href=`/food/delete/${foodItem.item_id}`, class="btn delete-btn", onclick="return confirm('Are you sure you want to delete this item?');") Delete
+                a(href=`/food/edit/${foodItem.item_id}`, class="btn edit-btn") Edit
+                a(href=`/food/delete/${foodItem.item_id}`, class="btn delete-btn", onclick="return confirm('Are you sure you want to delete this item?');") Delete
         else
           tr
             td(colspan="10") No matching food items found.

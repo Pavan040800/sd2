@@ -86,7 +86,7 @@ app.post("/authenticate", async (req, res) => {
       if (match) {
         req.session.uid = uId;
         req.session.loggedIn = true;
-        res.redirect("/home");
+        res.redirect("/dashboard");
       } else {
         res.render("login", { errorMessage: "Invalid password" });
       }
@@ -154,6 +154,78 @@ app.get("/hello/:name", (req, res) => {
 
 app.get("/goodbye", (req, res) => {
   res.send("Goodbye world!");
+});
+
+// Render “New Food Item” form
+app.get("/food/new", (req, res) => {
+  res.render("food-form", { foodItem: {} });
+});
+
+// Handle creation
+app.post("/food/new", async (req, res) => {
+  const { restaurant_id, name, description, quantity, expiry_date } = req.body;
+  try {
+    await db.query(
+      `INSERT INTO FoodItems
+         (restaurant_id, name, description, quantity, expiry_date)
+       VALUES (?, ?, ?, ?, ?)`,
+      [restaurant_id, name, description, quantity, expiry_date]
+    );
+    res.redirect("/dashboard");
+  } catch (err) {
+    console.error("Error creating food item:", err.message);
+    res.status(500).send("Failed to create food item.");
+  }
+});
+
+// Render “Edit Food Item” form
+app.get("/food/edit/:id", async (req, res) => {
+  try {
+    const results = await db.query(
+      "SELECT * FROM FoodItems WHERE item_id = ?",
+      [req.params.id]
+    );
+    if (!results.length) return res.status(404).send("Item not found.");
+    res.render("food-form", { foodItem: results[0] });
+  } catch (err) {
+    console.error("Error fetching for edit:", err.message);
+    res.status(500).send("Error loading edit form.");
+  }
+});
+
+// Handle update
+app.post("/food/edit/:id", async (req, res) => {
+  const { restaurant_id, name, description, quantity, expiry_date } = req.body;
+  try {
+    await db.query(
+      `UPDATE FoodItems
+         SET restaurant_id=?, name=?, description=?,
+             quantity=?, expiry_date=?
+       WHERE item_id=?`,
+      [
+        restaurant_id, name, description,
+        quantity, expiry_date, req.params.id
+      ]
+    );
+    res.redirect("/dashboard");
+  } catch (err) {
+    console.error("Error updating food item:", err.message);
+    res.status(500).send("Failed to update food item.");
+  }
+});
+
+// Handle deletion
+app.get("/food/delete/:id", async (req, res) => {
+  try {
+    await db.query(
+      "DELETE FROM FoodItems WHERE item_id = ?",
+      [req.params.id]
+    );
+    res.redirect("/dashboard");
+  } catch (err) {
+    console.error("Error deleting food item:", err.message);
+    res.status(500).send("Failed to delete food item.");
+  }
 });
 
 // Start server
