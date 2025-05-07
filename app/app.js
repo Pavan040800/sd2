@@ -159,6 +159,36 @@ app.get("/about", (req, res) => {
   res.render("about");
 });
 
+// Contact page (GET)
+app.get("/contact", (req, res) => {
+  res.render("contact");
+});
+
+// Handle contact‐form submission
+app.post("/contact", async (req, res) => {
+  const { name, email, message } = req.body;
+
+  try {
+    // Insert into Contacts table
+    await db.query(
+      `INSERT INTO Contacts (name, email, message)
+       VALUES (?, ?, ?)`,
+      [name, email, message]
+    );
+
+    // Render the same page with a success message
+    res.render("contact", {
+      successMessage: "Thanks! Your message has been received.",
+      loggedIn: req.session.loggedIn
+    });
+  } catch (err) {
+    console.error("Error saving contact message:", err.message);
+    res.render("contact", {
+      errorMessage: "Sorry, we couldn’t send your message. Please try again.",
+      loggedIn: req.session.loggedIn
+    });
+  }
+});
 // Render “New Food Item” form
 app.get("/food_create", async (req, res) => {
   try {

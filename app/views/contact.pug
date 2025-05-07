@@ -1,0 +1,32 @@
+doctype html
+html
+  head
+    title Contact Us – Save Bytes
+    link(rel="stylesheet", href="/contact.css")
+  body
+    include index
+
+    .contact-hero
+      h1 Contact Us
+
+    .contact-content
+      p If you have any questions, feedback, or just want to say hello, drop us a line at:
+      p
+        strong Email:
+        a(href="mailto:support@savebytes.org") support@savebytes.org
+      p
+        strong Phone: +1 (555) 123-4567
+
+      hr
+      h2 Send Us a Message
+      form.contact-form(action="/contact" method="POST")
+        label(for="name") Your Name
+        input#name(type="text" name="name" required)
+
+        label(for="email") Your Email
+        input#email(type="email" name="email" required)
+
+        label(for="message") Message
+        textarea#message(name="message" rows="6" required)
+
+        button.btn.submit-btn(type="submit") Send Message
