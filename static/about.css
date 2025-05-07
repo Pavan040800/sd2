@@ -1,0 +1,70 @@
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #2c3e50;
+    background: #fff;
+  }
+  
+  /* Hero section */
+  .about-hero {
+    background-color: #2c3e50;
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+  }
+  .about-hero h1 {
+    margin: 0;
+    font-size: 2.5rem;
+  }
+  
+  /* Content area */
+  .about-content {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1000px;
+    margin: 40px auto;
+    gap: 20px;
+    padding: 0 20px;
+  }
+  .about-content .column {
+    flex: 1 1 280px; /* grow/shrink with a min width of ~280px */
+    display: flex;
+    flex-direction: column;
+  }
+  .about-content .column h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: #34495e;
+  }
+  .about-content .column p,
+  .about-content .column ul {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .about-content .column ul {
+    padding-left: 1.2em;
+  }
+  .about-content .column ul li {
+    margin-bottom: 0.5em;
+  }
+  
+  /* Footer */
+  .site-footer {
+    background-color: #ecf0f1;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #7f8c8d;
+  }
+  
+  /* Responsive tweak */
+  @media (max-width: 600px) {
+    .about-hero {
+      padding: 40px 10px;
+    }
+    .about-hero h1 {
+      font-size: 2rem;
+    }
+  }
+  

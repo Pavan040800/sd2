@@ -155,6 +155,9 @@ app.get("/hello/:name", (req, res) => {
 app.get("/goodbye", (req, res) => {
   res.send("Goodbye world!");
 });
+app.get("/about", (req, res) => {
+  res.render("about");
+});
 
 // Render “New Food Item” form
 app.get("/food_create", async (req, res) => {
