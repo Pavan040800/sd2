@@ -157,12 +157,20 @@ app.get("/goodbye", (req, res) => {
 });
 
 // Render “New Food Item” form
-app.get("/food_create", (req, res) => {
-  res.render("food-form", { foodItem: {} });
+app.get("/food_create", async (req, res) => {
+  try {
+    const restaurants = await db.query(
+      "SELECT restaurant_id, name FROM Restaurants"
+    );
+    res.render("food-form", { foodItem: {}, restaurants });
+  } catch (err) {
+    console.error("Error loading form:", err);
+    res.status(500).send("Error loading food item form.");
+  }
 });
 
 // Handle creation
-app.post("/food/new", async (req, res) => {
+app.post("/food_create", async (req, res) => {
   const { restaurant_id, name, description, quantity, expiry_date } = req.body;
   try {
     await db.query(
@@ -181,14 +189,18 @@ app.post("/food/new", async (req, res) => {
 // Render “Edit Food Item” form
 app.get("/food/edit/:id", async (req, res) => {
   try {
-    const results = await db.query(
+    const [item] = await db.query(
       "SELECT * FROM FoodItems WHERE item_id = ?",
       [req.params.id]
     );
-    if (!results.length) return res.status(404).send("Item not found.");
-    res.render("food-form", { foodItem: results[0] });
+    if (!item) return res.status(404).send("Item not found.");
+
+    const restaurants = await db.query(
+      "SELECT restaurant_id, name FROM Restaurants"
+    );
+    res.render("food-form", { foodItem: item, restaurants });
   } catch (err) {
-    console.error("Error fetching for edit:", err.message);
+    console.error("Error fetching for edit:", err);
     res.status(500).send("Error loading edit form.");
   }
 });

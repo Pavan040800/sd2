@@ -11,31 +11,39 @@ html
     form(
       action= foodItem.item_id
         ? `/food/edit/${foodItem.item_id}`
-        : '/food/new'
+        : '/food_create'
       method="POST"
       class="form-container"
     )
-      label(for="restaurant_id") Restaurant ID
-      input(
-        type="number" name="restaurant_id" required
-        value=foodItem.restaurant_id || ''
-      )
+      //– RESTAURANT DROPDOWN
+      label(for="restaurant_id") Restaurant
+      select#restaurant_id(name="restaurant_id" required)
+        option(value="" disabled selected= !foodItem.restaurant_id) -- Select Restaurant --
+        each r in restaurants
+          option(
+            value= r.restaurant_id
+            selected= (foodItem.restaurant_id == r.restaurant_id)
+          )= r.name
 
+      //– NAME
       label(for="name") Name
       input(
         type="text" name="name" required
         value=foodItem.name || ''
       )
 
+      //– DESCRIPTION
       label(for="description") Description
       textarea(name="description" required)= foodItem.description || ''
 
+      //– QUANTITY
       label(for="quantity") Quantity
       input(
         type="number" name="quantity" min="1" required
         value=foodItem.quantity || ''
       )
 
+      //– EXPIRY DATE
       label(for="expiry_date") Expiry Date
       input(
         type="date" name="expiry_date" required

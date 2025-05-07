@@ -106,4 +106,37 @@ body {
       font-size: 1.5rem;
     }
   }
+  /* Dropdown (select) */
+select#restaurant_id {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    /* remove native arrow for custom styling (optional) */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* add a custom arrow using an SVG inlined as data-URI */
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='7' viewBox='0 0 10 7' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23777' stroke-width='2' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px 7px;
+  }
+  
+  select#restaurant_id:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    outline: none;
+  }
+  
+  /* If you want to ensure the placeholder (“-- Select Restaurant --”) is grayed out */
+  select#restaurant_id option[value=""] {
+    color: #888;
+  }
   
